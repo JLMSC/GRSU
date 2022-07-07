@@ -8,9 +8,9 @@ requests==2.25.1
 ```
 
 ## **Arquivo '.env'.**
-O Token de autenticação deve ser inserido dentro da pasta "*Settings*", 
-feito isto, basta inicializar a classe "*SettingsHandler*" que a variável 
-de ambiente alvo será carregada.
+O Token de autenticação, nomeado como "OPEN_ROUTE_TOKEN", deve ser inserido 
+dentro da pasta "*Settings*", feito isto, basta inicializar a classe 
+"*SettingsHandler*" que a variável de ambiente alvo será carregada.
 
 # TODO
 [X] Arrumar as coordenadas, trocar a ordem.
