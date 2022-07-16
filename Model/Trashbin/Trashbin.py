@@ -32,3 +32,7 @@ class TrashBin:
         # Definido parâmetro de coleta se o volume for mair ou igual a 80% do total.
         trashbin_volume_limit = (self.trashbin_max_volume * 80.0) / 100.0
         return self.trashbin_current_volume >= trashbin_volume_limit
+    
+    def get_trashbin_coordinates(self) -> list[float]:
+        """Retorna as coordenadas da lixeira."""
+        return list(map(float, self.trashbin_coordinates.split(',')))

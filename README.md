@@ -18,9 +18,9 @@ dentro da pasta "*Settings*", feito isto, basta inicializar a classe
 [X] Fazer um request das matrizes de distancia e tempo.
 [X] Armazenar as matrizes de distancia e tempo.
 [X] Gerar uma lista de prioridades das lixeiras com volumes >= 80%.
-[] Pegar as coordenadas priorizadas pelo o volume da lixeira.
+[X] Pegar as coordenadas priorizadas pelo o volume da lixeira.
 (OpenRouteService ja faz isso, mas devemos testar antes.)
-[] Gerar um rota entre as lixeiras, priorizando a que tem mais volume.
+[X] Gerar um rota entre as lixeiras, priorizando a que tem mais volume.
 [] Otimizar a rota.
 (Opcional)
 [] Alternativas para otimização de rota.

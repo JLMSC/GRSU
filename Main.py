@@ -40,9 +40,16 @@ OPEN_ROUTE_SERVICE = "https://api.openrouteservice.org"
 class Model:
     """Classe principal."""
 
+    def check_request(self, call) -> dict:
+        """Verifica se um request foi executado corretamente."""
+        if call.status_code != 200:
+            raise ValueError(f"Erro retornado: {call.reason}")
+        else:
+            return loads(call.text)
+
     def load_trashbins(self):
         """Inicializa os objeto 'Trashbin' armazenando-os."""
-        for coordinates in TRASHBIN_COORDINATES:
+        for coordinates in TRASHBIN_COORDINATES[1:]:
             TRASHBINS.append(TrashBin(max_volume=120.0, coordinates=",".join(str(coords) for coords in coordinates)))
     
     def load_distances_and_times(self) -> dict:
@@ -54,10 +61,7 @@ class Model:
         }
         call = requests.post(f"{OPEN_ROUTE_SERVICE}/v2/matrix/driving-car", json=body, headers=HEADERS)
         # Verifica se o request foi bem executado.
-        if call.status_code != 200:
-            raise ValueError(f"Erro retornado: {call.reason}")
-        else:
-            return loads(call.text)
+        return self.check_request(call)
         
     def load_trashbin_volumes(self):
         """Pega os volumes das lixeiras e prioriza-os."""
@@ -68,6 +72,17 @@ class Model:
                 need_to_collect.append(trashbin)
         # Prioriza as lixeiras com maiores volumes.
         return sorted(need_to_collect, key=lambda trashbin: trashbin.trashbin_current_volume, reverse=True)
+    
+    def load_route(self, coordinates: list) -> dict:
+        """Gera uma rota entre as coordenadas priorizadas."""
+        # Parâmetros do request da rota.
+        body = {
+            'coordinates': [coordinate for coordinate in coordinates],
+            'language': 'pt'
+        }
+        call = requests.post(f"{OPEN_ROUTE_SERVICE}/v2/directions/driving-car", json=body, headers=HEADERS)
+        # Verifica se o request foi bem executado.
+        return self.check_request(call)
 
 
 if __name__ == "__main__":
@@ -80,3 +95,7 @@ if __name__ == "__main__":
     model_time = model_distance_and_time["durations"]
     # Define a ordem de prioridade para coleta das lixeiras.
     priorized_collection_order = model.load_trashbin_volumes()
+    # Adiciona as coordenads do ponto de partida.
+    priorized_coordinates = [SOURCE] + [trashbin.get_trashbin_coordinates() for trashbin in priorized_collection_order]
+    # Gera uma rota entre os pontos.
+    routes = model.load_route(priorized_coordinates)
