@@ -1,3 +1,5 @@
 /Model/Trashbin/__pycache__
 /Settings/__pycache__
 Settings/.env
+direction_result.geojson
+directions.geojson

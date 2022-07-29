@@ -2,6 +2,7 @@ import requests
 from json import loads
 from Settings.SettingsHandler import SettingsHandler
 from Model.Trashbin.Trashbin import TrashBin
+from json import dump
 
 # Extrai o Token do 'OpenRouteService'.
 OPEN_ROUTE_SERVICE_TOKEN = SettingsHandler().open_route_service_token
@@ -80,10 +81,9 @@ class Model:
             'coordinates': [coordinate for coordinate in coordinates],
             'language': 'pt'
         }
-        call = requests.post(f"{OPEN_ROUTE_SERVICE}/v2/directions/driving-car", json=body, headers=HEADERS)
+        call = requests.post(f"{OPEN_ROUTE_SERVICE}/v2/directions/driving-car/geojson", json=body, headers=HEADERS)
         # Verifica se o request foi bem executado.
         return self.check_request(call)
-
 
 if __name__ == "__main__":
     model = Model()
@@ -99,3 +99,12 @@ if __name__ == "__main__":
     priorized_coordinates = [SOURCE] + [trashbin.get_trashbin_coordinates() for trashbin in priorized_collection_order]
     # Gera uma rota entre os pontos.
     routes = model.load_route(priorized_coordinates)
+
+    # TODO: Botar as coordenadas do ponto de partida no final da lista, ele tem que voltar.
+
+    # TODO: Olhar melhor isso aqui.
+    # Site: https://maps.openrouteservice.org/ <- visualizar o GeoJSON no mapa.
+    # Escreve as instruções das rotas em um GeoJSON.
+    with open('directions.geojson', 'w') as file:
+        dump(routes, file)
+        file.close()
