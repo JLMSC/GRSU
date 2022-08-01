@@ -1,110 +1,35 @@
-import requests
-from json import loads
-from Settings.SettingsHandler import SettingsHandler
-from Model.Trashbin.Trashbin import TrashBin
-from json import dump
+from typing import Any
+from Model.Model import Model
+from Model.Caller.Caller import Caller
+from Settings.Settings import Settings
 
-# Extrai o Token do 'OpenRouteService'.
-OPEN_ROUTE_SERVICE_TOKEN = SettingsHandler().open_route_service_token
 
-# Coordenadas do ponto de partida.
-SOURCE = [-38.500499900597745, -3.7769178589442527]
+def main(settings: Settings, model: Model):
+    """Função principal.
 
-# Coordenadas das lixeiras inteligentes.
-TRASHBIN_COORDINATES = [
-    SOURCE, # Coordenadas do Ponto de partida.
-    [-38.53866577, -3.75756748],
-    [-38.49557877, -3.76585371],
-    [-38.55128288, -3.76354128],
-    [-38.56484413, -3.74589811],
-    [-38.55600357, -3.74238656],
-    [-38.53360176, -3.76525419],
-    [-38.50090027, -3.74093055],
-    [-38.53639126, -3.71943269],
-    [-38.56304169, -3.77424691],
-    [-38.54261398, -3.77210579]
-]
+    Args:
+        settings (Settings): Carrega as variáveis de ambiente.
+        model (Model): Carrega a classe responsável pelos principais métodos.
+    """
+    # Responsável pelas 'requests' no OpenRouteService.
+    ors_caller: Caller = settings.open_route_service_token
+    # Pega as coordenadas ordenadas pelo volume das lixeiras.
+    coordinates: list[list[float]] = model.add_source_coordinate(model.get_coordinates())
+    # Pega a matriz da distância e tempo entre as coordenadas.
+    matrix_info: Any = ors_caller.request_matrix(coordinates)
 
-# Lista contendo todas as lixeiras cadastradas.
-TRASHBINS = []
+    # TODO: Otimizar a rota (coordenadas) baseado no tempo e distância.
 
-# Headers referentes aos requests em 'OpenRouteService'.
-HEADERS = {
-    'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
-    'Authorization': OPEN_ROUTE_SERVICE_TOKEN,
-    'Content-Type': 'application/json; charset=utf-8'
-}
+    distances: list[float] = matrix_info['distances']
+    durations: list[float] = matrix_info['durations']
+    # Gera uma 'URL' do Google Maps.
+    google_maps_url: str = model.generate_route_view(coordinates)
+    print(google_maps_url)
 
-# URL do 'OpenRouteService'.
-OPEN_ROUTE_SERVICE = "https://api.openrouteservice.org"
-
-class Model:
-    """Classe principal."""
-
-    def check_request(self, call) -> dict:
-        """Verifica se um request foi executado corretamente."""
-        if call.status_code != 200:
-            raise ValueError(f"Erro retornado: {call.reason}")
-        else:
-            return loads(call.text)
-
-    def load_trashbins(self):
-        """Inicializa os objeto 'Trashbin' armazenando-os."""
-        for coordinates in TRASHBIN_COORDINATES[1:]:
-            TRASHBINS.append(TrashBin(max_volume=120.0, coordinates=",".join(str(coords) for coords in coordinates)))
-    
-    def load_distances_and_times(self) -> dict:
-        """Gera as distâncias e os tempos entre as lixeiras através do 'OpenRouteService'."""
-        # Parâmetros dos requests das distâncias e do tempo em 'OpenRouteService'.
-        body = {
-            'locations': TRASHBIN_COORDINATES,
-            'metrics': ['distance', 'duration']
-        }
-        call = requests.post(f"{OPEN_ROUTE_SERVICE}/v2/matrix/driving-car", json=body, headers=HEADERS)
-        # Verifica se o request foi bem executado.
-        return self.check_request(call)
-        
-    def load_trashbin_volumes(self):
-        """Pega os volumes das lixeiras e prioriza-os."""
-        need_to_collect = []
-        for trashbin in TRASHBINS:
-            # Verifica se a lixeira precisa ser coletada.
-            if trashbin.check_volume():
-                need_to_collect.append(trashbin)
-        # Prioriza as lixeiras com maiores volumes.
-        return sorted(need_to_collect, key=lambda trashbin: trashbin.trashbin_current_volume, reverse=True)
-    
-    def load_route(self, coordinates: list) -> dict:
-        """Gera uma rota entre as coordenadas priorizadas."""
-        # Parâmetros do request da rota.
-        body = {
-            'coordinates': [coordinate for coordinate in coordinates],
-            'language': 'pt'
-        }
-        call = requests.post(f"{OPEN_ROUTE_SERVICE}/v2/directions/driving-car/geojson", json=body, headers=HEADERS)
-        # Verifica se o request foi bem executado.
-        return self.check_request(call)
+    # TODO: Não faz muito sentido pedir essa informação,
+    # pq ele percorre na ordem que é fornecido as coordenadas,
+    # basicamente não otimiza a rota, só segue na ordem.
+    # route_info = ors_caller.request_route(coordinates)
 
 if __name__ == "__main__":
-    model = Model()
-    # Carrega as lixeiras.
-    model.load_trashbins()
-    # Extrai as distâncias e os tempos em matrizes diferentes.
-    model_distance_and_time = model.load_distances_and_times()
-    model_distance = model_distance_and_time["distances"]
-    model_time = model_distance_and_time["durations"]
-    # Define a ordem de prioridade para coleta das lixeiras.
-    priorized_collection_order = model.load_trashbin_volumes()
-    # Adiciona as coordenads do ponto de partida.
-    priorized_coordinates = [SOURCE] + [trashbin.get_trashbin_coordinates() for trashbin in priorized_collection_order]
-    # Gera uma rota entre os pontos.
-    routes = model.load_route(priorized_coordinates)
-
-    # TODO: Botar as coordenadas do ponto de partida no final da lista, ele tem que voltar.
-
-    # TODO: Olhar melhor isso aqui.
-    # Site: https://maps.openrouteservice.org/ <- visualizar o GeoJSON no mapa.
-    # Escreve as instruções das rotas em um GeoJSON.
-    with open('directions.geojson', 'w') as file:
-        dump(routes, file)
-        file.close()
+    main(Settings(), Model())

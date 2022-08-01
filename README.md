@@ -1,27 +1,17 @@
 # **GRSU**
-**Otimização de rotas**, através da obtenção de informações geradas,
-**entre diversos pontos**, pelo **OpenRouteService**.
+**Otimização de rotas**, através da obtenção de informações geradas, **entre diversas coordenadas**, pelo [**OpenRouteService**](https://openrouteservice.org/)
+
+## **Autor**
+Joan Lucas Marques de Sousa Chaves
 
 ## **Dependências**
 ```py
 requests==2.25.1
+python-dotenv==0.20.0
 ```
 
 ## **Arquivo '.env'.**
-O Token de autenticação, nomeado como "OPEN_ROUTE_TOKEN", deve ser inserido 
-dentro da pasta "*Settings*", feito isto, basta inicializar a classe 
-"*SettingsHandler*" que a variável de ambiente alvo será carregada.
+O **Token** de autenticação, nomeado como "**OPEN_ROUTE_SERVICE_TOKEN**", deve ser inserido dentro da pasta "***Settings***", feito isto, basta inicializar a classe "***Settings***" que a variável de ambiente alvo será carregada.
 
-# TODO
-[X] Arrumar as coordenadas, trocar a ordem.
-[X] Ver se da para fazer uma rota com várias coordenadas.
-[X] Fazer um request das matrizes de distancia e tempo.
-[X] Armazenar as matrizes de distancia e tempo.
-[X] Gerar uma lista de prioridades das lixeiras com volumes >= 80%.
-[X] Pegar as coordenadas priorizadas pelo o volume da lixeira.
-(OpenRouteService ja faz isso, mas devemos testar antes.)
-[X] Gerar um rota entre as lixeiras, priorizando a que tem mais volume.
-[] Otimizar a rota.
-(Opcional)
-[] Alternativas para otimização de rota.
-[] Mostrar a rota em um mapa.
+## **Visualização de Rotas**
+Após coletado as informações sobre as coordenadas e otimizado-as, gera-se uma **URL**, do [**Google Maps**](https://www.google.com.br/maps/), contendo a rota na ordem em que a mesma foi definida.
