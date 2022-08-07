@@ -1,17 +1,36 @@
 # **GRSU**
-**Otimização de rotas**, através da obtenção de informações geradas, **entre diversas coordenadas**, pelo [**OpenRouteService**](https://openrouteservice.org/)
-
-## **Autor**
-Joan Lucas Marques de Sousa Chaves
+**Otimização de rotas**, através da obtenção de informações geradas, 
+**entre diversas coordenadas**, pelo 
+[**OpenRouteService**](https://openrouteservice.org/)
 
 ## **Dependências**
 ```py
 requests==2.25.1
 python-dotenv==0.20.0
+ortools==9.3.10497
 ```
+~ Foi utilizado **Python 3.10.4** para o desenvolvimento.
 
-## **Arquivo '.env'.**
-O **Token** de autenticação, nomeado como "**OPEN_ROUTE_SERVICE_TOKEN**", deve ser inserido dentro da pasta "***Settings***", feito isto, basta inicializar a classe "***Settings***" que a variável de ambiente alvo será carregada.
+## **Sobre o arquivo '.env'.**
+O **Token** de autenticação da **API** do 
+[**OpenRouteService**](https://openrouteservice.org/), nomeado como 
+"**OPEN_ROUTE_SERVICE_TOKEN**", deve ser inserido dentro da 
+pasta "**Source/Config/**", feito isto, basta chamar o método
+"**load_ors_token()** da classe "**Settings**", do arquivo 
+"**Source/Config/Settings.py**" que a variável de ambiente alvo 
+será carregada.
+
+## **Otimização de Rotas**
+A **otimização de rotas** é realizada através de um algoritmo voltado
+ao ["**Problema do Caixeiro-Viajante**"](https://pt.wikipedia.org/wiki/Problema_do_caixeiro-viajante):
+"*o qual tenta determinar a menor rota para percorrer uma série de cidades,
+visitando-as uma única vez e, por fim, retornando a cidade origem.*". Foi
+utilizado a biblioteca ["**OR-TOOLS**"](https://developers.google.com/optimization)
+para resolução do 
+["**Problema do Caixeiro-Viajante**"](https://pt.wikipedia.org/wiki/Problema_do_caixeiro-viajante), 
+dada a sua definição.
 
 ## **Visualização de Rotas**
-Após coletado as informações sobre as coordenadas e otimizado-as, gera-se uma **URL**, do [**Google Maps**](https://www.google.com.br/maps/), contendo a rota na ordem em que a mesma foi definida.
+Após coletado as informações sobre as coordenadas e otimizado-as, gera-se 
+uma **URL**, do [**Google Maps**](https://www.google.com.br/maps/), 
+contendo a rota na ordem em que a mesma foi definida.

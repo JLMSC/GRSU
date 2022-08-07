@@ -1,35 +1,47 @@
 from typing import Any
-from Model.Model import Model
-from Model.Caller.Caller import Caller
-from Settings.Settings import Settings
+from Source.Config.Settings import Settings
+from Source.Models.Model import Model
+from Source.Scripts.TSP import TSP
+from Source.Tools.Caller import Caller
 
 
-def main(settings: Settings, model: Model):
+def main(ors_api: Caller, model: Model) -> None:
     """Função principal.
 
     Args:
-        settings (Settings): Carrega as variáveis de ambiente.
-        model (Model): Carrega a classe responsável pelos principais métodos.
+        ors_api (Caller): Responsável pelas requisições na 'API' do
+        'OpenRouteService'.
+        model (Model): Responsável pela manipulação de objetos gerados,
+        tanto pelas chamas na 'API', como nas otimizações referentes à
+        roteamento.
     """
-    # Responsável pelas 'requests' no OpenRouteService.
-    ors_caller: Caller = settings.open_route_service_token
-    # Pega as coordenadas ordenadas pelo volume das lixeiras.
-    coordinates: list[list[float]] = model.add_source_coordinate(model.get_coordinates())
-    # Pega a matriz da distância e tempo entre as coordenadas.
-    matrix_info: Any = ors_caller.request_matrix(coordinates)
 
-    # TODO: Otimizar a rota (coordenadas) baseado no tempo e distância.
+    # Pega as coordenadas das lixeiras inteligentes que estão 'cheias'.
+    trashbins_coords: list[list[float]] = model.get_trashbins_coords(
+        trashbins=model.get_trashbins_by_volume()
+    )
 
-    distances: list[float] = matrix_info['distances']
-    durations: list[float] = matrix_info['durations']
-    # Gera uma 'URL' do Google Maps.
-    google_maps_url: str = model.generate_route_view(coordinates)
-    print(google_maps_url)
+    # Requisita uma matriz de distância e tempo entre as coordenadas.
+    # Matriz de distância : matrix['distances']
+    # Matriz de tempo : matrix['durations']
+    matrix: Any = ors_api.request_matrix(
+        coordinates=trashbins_coords
+    )
 
-    # TODO: Não faz muito sentido pedir essa informação,
-    # pq ele percorre na ordem que é fornecido as coordenadas,
-    # basicamente não otimiza a rota, só segue na ordem.
-    # route_info = ors_caller.request_route(coordinates)
+    # Por fim, gera uma 'URL' de visualização e navegação, em tempo real,
+    # no Google Maps, baseado na ordem estabelecida pelo algoritmo de 'TSP'.
+    url = model.gen_googlemaps_view(
+        coordinates=trashbins_coords,
+        order=TSP(matrix['durations'])
+    )
+    print(url)
 
 if __name__ == "__main__":
-    main(Settings(), Model())
+    # Executa a função principal, incializando a classe 'Caller' já com o
+    # Token de acesso da 'API' do 'OpenRouteService'.
+    main(
+        ors_api=Caller(
+            token=Settings.load_ors_token()
+        ),
+        model=Model()
+    )

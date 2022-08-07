@@ -1,5 +1,5 @@
-/Model/Trashbin/__pycache__
-/Model/Caller/__pycache__
-/Model/__pycache__
-/Settings/__pycache__
-Settings/.env
+**/__pycache__
+/Source/Config/.env
+/Source/Temp/
+/.vscode
+__pycache__
