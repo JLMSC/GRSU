@@ -5,7 +5,7 @@ from Source.Scripts.TSP import TSP
 from Source.Tools.Caller import Caller
 
 
-def main(ors_api: Caller, model: Model) -> None:
+def main(ors_api: Caller, model: Model) -> dict:
     """Função principal.
 
     Args:
@@ -30,18 +30,25 @@ def main(ors_api: Caller, model: Model) -> None:
 
     # Por fim, gera uma 'URL' de visualização e navegação, em tempo real,
     # no Google Maps, baseado na ordem estabelecida pelo algoritmo de 'TSP'.
+    order = TSP(matrix['durations'])
     url = model.gen_googlemaps_view(
         coordinates=trashbins_coords,
-        order=TSP(matrix['durations'])
+        order=order
     )
-    print(url)
+
+    return {
+        "order": order,
+        "web_url": url
+    }
 
 if __name__ == "__main__":
     # Executa a função principal, incializando a classe 'Caller' já com o
     # Token de acesso da 'API' do 'OpenRouteService'.
-    main(
+    result_dict = main(
         ors_api=Caller(
             token=Settings.load_ors_token()
         ),
         model=Model()
     )
+
+    print(result_dict)
