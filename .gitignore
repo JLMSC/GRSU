@@ -1,5 +1,6 @@
 **/__pycache__
 /Source/Config/.env
+/grsu/.env
 /Source/Temp/
 /.vscode
 __pycache__
