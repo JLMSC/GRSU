@@ -40,7 +40,7 @@ uma **URL**, do [**Google Maps**](https://www.google.com.br/maps/),
 contendo a rota na ordem em que a mesma foi definida.
 
 ## **API**
-Para rodar a API, o [django](https://www.djangoproject.com) precisa estar instalado na máquina.
+O framework [django](https://www.djangoproject.com) é usado para rodar a API.
 Se já estiver instalado, deve usar o seguinte comando para iniciar o servidor:
 ```
 py manage.py runserver
