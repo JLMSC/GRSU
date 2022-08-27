@@ -20,6 +20,10 @@ pasta "**Source/Config/**", feito isto, basta chamar o método
 "**Source/Config/Settings.py**" que a variável de ambiente alvo 
 será carregada.
 
+Também deve ser criado outro arquivo na pasta "**grsu/**" com um valor para a 
+[secret key](https://docs.djangoproject.com/en/4.1/ref/settings/#secret-key)
+do projeto, nomeado como "**SECRET_KEY**".
+
 ## **Otimização de Rotas**
 A **otimização de rotas** é realizada através de um algoritmo voltado
 ao ["**Problema do Caixeiro-Viajante**"](https://pt.wikipedia.org/wiki/Problema_do_caixeiro-viajante):
@@ -34,3 +38,10 @@ dada a sua definição.
 Após coletado as informações sobre as coordenadas e otimizado-as, gera-se 
 uma **URL**, do [**Google Maps**](https://www.google.com.br/maps/), 
 contendo a rota na ordem em que a mesma foi definida.
+
+## **API**
+Para rodar a API, o [django](https://www.djangoproject.com) precisa estar instalado na máquina.
+Se já estiver instalado, deve usar o seguinte comando para iniciar o servidor:
+```
+py manage.py runserver
+```
