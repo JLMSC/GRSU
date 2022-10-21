@@ -1,28 +1,11 @@
 from dataclasses import dataclass, field
 from json import loads
-<<<<<<< HEAD
-from typing import Any
-=======
 from typing import Any, NoReturn
->>>>>>> bfa5ccc (Imp. rotas para N veiculos e novas coordenadas.)
 
 from requests import Response, post
 
 # Endpoint da API de matrizes, do 'OpenRouteService'.
 # MATRIX_DOMAIN = f"https://api.openrouteservice.org/v2/matrix/driving-hgv"
-<<<<<<< HEAD
-MATRIX_DOMAIN = f"https://api.openrouteservice.org/v2/matrix/driving-car"
-
-class HTTPResponseError(Exception):
-    """Exceção relacionada ao código de resposta dos 'requests'."""
-    pass
-
-class NoTrashToCollect(Exception):
-    """Exceção relacionada à não existência de lixeiras inteligentes que
-    precisam ser coletadas."""
-    pass
-
-=======
 MATRIX_DOMAIN: str = f"https://api.openrouteservice.org/v2/matrix/driving-car"
 
 
@@ -39,7 +22,6 @@ class NoTrashToCollect(Exception):
     pass
 
 
->>>>>>> bfa5ccc (Imp. rotas para N veiculos e novas coordenadas.)
 @dataclass
 class Caller:
     """Responsável pelas requisições na 'API' do 'OpenRouteService'."""
@@ -64,12 +46,7 @@ class Caller:
         if status_code == 200:
             return True
         raise HTTPResponseError(
-<<<<<<< HEAD
-            f"[Caller.py] " +
-            f"Chamada inválida, código retornado: {status_code}"
-=======
             f"[Caller.py] " + f"Chamada inválida, código retornado: {status_code}"
->>>>>>> bfa5ccc (Imp. rotas para N veiculos e novas coordenadas.)
         )
 
     def request_matrix(self, coordinates: list[list[float]]) -> Any:
@@ -86,21 +63,6 @@ class Caller:
         # Indica que as coordenadas não possuem nenhuma lixeira inteligente.
         if len(coordinates) == 2:
             raise NoTrashToCollect(
-<<<<<<< HEAD
-                '[Caller.py] Nenhuma lixeira precisa ser coletada no momento.'
-            )
-
-        # Parâmetros adicionais referentes à requisição da matriz.
-        additional_parameters = {
-            'locations': coordinates,
-            'metrics': ['distance', 'duration']
-        }
-        # Faz a chamada passando os parâmetros adicionais.
-        response: Response = post(
-            MATRIX_DOMAIN, 
-            json=additional_parameters,
-            headers=self.headers
-=======
                 "[Caller.py] Nenhuma lixeira precisa ser coletada no momento."
             )
 
@@ -112,7 +74,6 @@ class Caller:
         # Faz a chamada passando os parâmetros adicionais.
         response: Response = post(
             MATRIX_DOMAIN, json=additional_parameters, headers=self.headers
->>>>>>> bfa5ccc (Imp. rotas para N veiculos e novas coordenadas.)
         )
         if self._check_request_status(response.status_code):
             return loads(response.text)
@@ -122,13 +83,7 @@ class Caller:
 
         # Configura os 'headers'.
         self.headers = {
-<<<<<<< HEAD
-            'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
-            'Authorization': self.token,
-            'Content-Type': 'application/json; charset=utf-8'
-=======
             "Accept": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8",
             "Authorization": self.token,
             "Content-Type": "application/json; charset=utf-8",
->>>>>>> bfa5ccc (Imp. rotas para N veiculos e novas coordenadas.)
         }

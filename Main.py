@@ -1,19 +1,11 @@
-<<<<<<< HEAD
-from typing import Any
-=======
 from typing import Any, Dict, NoReturn, List
->>>>>>> bfa5ccc (Imp. rotas para N veiculos e novas coordenadas.)
 from Source.Config.Settings import Settings
 from Source.Models.Model import Model
 from Source.Scripts.TSP import TSP
 from Source.Tools.Caller import Caller
 
 
-<<<<<<< HEAD
-def main(ors_api: Caller, model: Model) -> None:
-=======
 def main(ors_api: Caller, model: Model) -> NoReturn:
->>>>>>> bfa5ccc (Imp. rotas para N veiculos e novas coordenadas.)
     """Função principal.
 
     Args:
@@ -25,30 +17,13 @@ def main(ors_api: Caller, model: Model) -> NoReturn:
     """
 
     # Pega as coordenadas das lixeiras inteligentes que estão 'cheias'.
-<<<<<<< HEAD
-    trashbins_coords: list[list[float]] = model.get_trashbins_coords(
-=======
     trashbins_coords: List[List[float]] = model.get_trashbins_coords(
->>>>>>> bfa5ccc (Imp. rotas para N veiculos e novas coordenadas.)
         trashbins=model.get_trashbins_by_volume()
     )
 
     # Requisita uma matriz de distância e tempo entre as coordenadas.
     # Matriz de distância : matrix['distances']
     # Matriz de tempo : matrix['durations']
-<<<<<<< HEAD
-    matrix: Any = ors_api.request_matrix(
-        coordinates=trashbins_coords
-    )
-
-    # Por fim, gera uma 'URL' de visualização e navegação, em tempo real,
-    # no Google Maps, baseado na ordem estabelecida pelo algoritmo de 'TSP'.
-    url = model.gen_googlemaps_view(
-        coordinates=trashbins_coords,
-        order=TSP(matrix['durations'])
-    )
-    print(url)
-=======
     matrix: Any = ors_api.request_matrix(coordinates=trashbins_coords)
 
     # Todas as 'n' rotas para os 'n' veículos.
@@ -67,18 +42,8 @@ def main(ors_api: Caller, model: Model) -> NoReturn:
         )
         print(f"URL da Rota do Veículo #{vehicle_id}\n: {vehicle_route_url}\n")
 
->>>>>>> bfa5ccc (Imp. rotas para N veiculos e novas coordenadas.)
 
 if __name__ == "__main__":
     # Executa a função principal, incializando a classe 'Caller' já com o
     # Token de acesso da 'API' do 'OpenRouteService'.
-<<<<<<< HEAD
-    main(
-        ors_api=Caller(
-            token=Settings.load_ors_token()
-        ),
-        model=Model()
-    )
-=======
     main(ors_api=Caller(token=Settings.load_ors_token()), model=Model())
->>>>>>> bfa5ccc (Imp. rotas para N veiculos e novas coordenadas.)
