@@ -36,11 +36,11 @@ def main(ors_api: Caller, model: Model) -> NoReturn:
     # Por fim, gera uma 'URL' de visualização e navegação, em tempo real,
     # no Google Maps, para cada 'n' veículos, baseando-se na ordem estabelecida
     # pelo algoritmo de 'TSP'.
-    for vehicle_id, vehicle_route in vehicle_routes.items():
-        vehicle_route_url: str = model.gen_googlemaps_view(
-            coordinates=trashbins_coords, order=vehicle_route
-        )
-        print(f"URL da Rota do Veículo #{vehicle_id}\n: {vehicle_route_url}\n")
+    #for vehicle_id, vehicle_route in vehicle_routes.items():
+    #    vehicle_route_url: str = model.gen_googlemaps_view(
+    #        coordinates=trashbins_coords, order=vehicle_route
+    #    )
+    #    print(f"URL da Rota do Veículo #{vehicle_id}\n: {vehicle_route_url}\n")
 
 
 if __name__ == "__main__":

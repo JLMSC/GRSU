@@ -5,8 +5,9 @@ from typing import Any, NoReturn
 from requests import Response, post
 
 # Endpoint da API de matrizes, do 'OpenRouteService'.
-# MATRIX_DOMAIN = f"https://api.openrouteservice.org/v2/matrix/driving-hgv"
-MATRIX_DOMAIN: str = f"https://api.openrouteservice.org/v2/matrix/driving-car"
+# MATRIX_DOMAIN: str = f"https://api.openrouteservice.org/v2/matrix/driving-hgv"
+#MATRIX_DOMAIN: str = f"https://api.openrouteservice.org/v2/matrix/driving-car"
+MATRIX_DOMAIN: str = f"http://localhost:8080/ors/v2/matrix/driving-car"
 
 
 class HTTPResponseError(Exception):
@@ -75,6 +76,7 @@ class Caller:
         response: Response = post(
             MATRIX_DOMAIN, json=additional_parameters, headers=self.headers
         )
+        #print(response.text)
         if self._check_request_status(response.status_code):
             return loads(response.text)
 
